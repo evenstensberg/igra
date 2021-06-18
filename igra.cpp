@@ -3,6 +3,8 @@
 #include <numeric>
 
 #include "igra.h"
+#include "parser.h"
+#include "lexer.h"
 
 #define DEBUG 1
 
@@ -17,8 +19,18 @@ class Configuration {
 
 enum Token {
 
-    E_OF
+    TOKEN_EOF = -1,
+    ILLEGAL,
+    IDENT,
+    INT,
+    SEMI,
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    ASSIGN
 };
+
 
 void debug_log(string msg) {
     if(DEBUG) {
@@ -40,5 +52,7 @@ int main(int argc, char **argv) {
 
     }
     debug_log(config.entry_content);
+    noop_parser();
+    noop_lexer();
     return 0;
 }
