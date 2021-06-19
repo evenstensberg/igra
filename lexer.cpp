@@ -8,6 +8,13 @@
 
 using namespace std;
 
+
+struct Token {
+  int pos;
+  string value;
+  string name;
+};
+
 class Lexer
 {
 public:
@@ -19,31 +26,54 @@ public:
     buff_len = buffer.length();
   };
   void skip_tokens();
-  int token(char *buff);
+  Token token(char *buff);
+  Token parse_comment(char *buff);
+  bool is_new_line(char c);
 };
 
 void Lexer::skip_tokens(){
 
 };
 
-int Lexer::token(char *buff)
+bool Lexer::is_new_line(char c) {
+  return (c == '\r' || c == '\n') ? true : false;
+};
+
+Token Lexer::parse_comment(char buff[]) {
+  int end_pos = pos + 2;
+  char charAtPos = buff[pos +2];
+  while(end_pos < buff_len && !(Lexer::is_new_line(buff[end_pos]))) {
+    end_pos++;
+  }
+
+  string token_string;
+  token_string.push_back(*buff);
+  Token token;
+  token.name = "COMMENT";
+  token.value = token_string.substr(pos, end_pos);
+  token.pos = pos;
+  return token;
+};
+
+Token Lexer::token(char buff[])
 {
   Lexer::skip_tokens();
   // cursor at EOF
   if (pos >= buff_len)
   {
-    return 0;
+    Token token;
+    return token;
   }
   char cursorChar = buff[pos];
 
   if(cursorChar == '/') {
     char nextCharFromPos = buff[pos + 1];
     if(nextCharFromPos == '/') {
-      // comment
-      return;
+      return Lexer::parse_comment(buff);
     } else {
       // divide token
-      return;
+      Token token;
+      return token;
     }
   }
 };
@@ -72,48 +102,6 @@ OpTable::OpMap OpTable::opMap_ = {
     {"[", "L_BRACKET"},
     {"]", "R_BRACKET"},
     {"=", "EQUALS"}};
-
-enum Token
-{
-
-  Num = 128,
-  Fun,
-  Sys,
-  Glo,
-  Loc,
-  Id,
-  Char,
-  Else,
-  Enum,
-  If,
-  Int,
-  Return,
-  Sizeof,
-  While,
-  Assign,
-  Cond,
-  Lor,
-  Lan,
-  Or,
-  Xor,
-  And,
-  Eq,
-  Ne,
-  Lt,
-  Gt,
-  Le,
-  Ge,
-  Shl,
-  Shr,
-  Add,
-  Sub,
-  Mul,
-  Div,
-  Mod,
-  Inc,
-  Dec,
-  Brak
-};
 
 static void next() {}
 
