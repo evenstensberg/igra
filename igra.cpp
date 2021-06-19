@@ -10,25 +10,11 @@
 
 using namespace std;
 
-class Configuration {
+// Entry point of the application 
+class EntryPoint {
     public: 
     string entry_content;
     string entry_path;
-};
-
-
-enum Token {
-
-    TOKEN_EOF = -1,
-    ILLEGAL,
-    IDENT,
-    INT,
-    SEMI,
-    ADD,
-    SUB,
-    MUL,
-    DIV,
-    ASSIGN
 };
 
 
@@ -40,19 +26,18 @@ void debug_log(string msg) {
 }
 
 int main(int argc, char **argv) {
-    Configuration config;
+    EntryPoint entry_point;
     if(argc < 2) {
         fprintf(stderr, "Not enough arguments to igra");
         return -1;
     }
-    config.entry_path = argv[1];
-    ifstream entryFile (config.entry_path);
+    entry_point.entry_path = argv[1];
+    ifstream entryFile (entry_point.entry_path);
     if(entryFile.is_open()) {
-        while(getline(entryFile, config.entry_content)) {}
+        while(getline(entryFile, entry_point.entry_content)) {}
 
     }
-    debug_log(config.entry_content);
-    noop_parser();
-    noop_lexer();
+    run_lexer(entry_point.entry_content);
+/*     noop_parser(); */
     return 0;
 }
