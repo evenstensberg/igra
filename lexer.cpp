@@ -13,7 +13,18 @@ class Lexer {
     int buff_len = 0;
     Lexer(string buffer) {
       buff_len = buffer.length();
-    }
+    };
+    void skip_tokens() {
+      return;
+    };
+    int token(int *buff) {
+      Lexer.skip_tokens();
+      // cursor at EOF
+      if(pos >= buff_len) {
+        return 0;
+      }
+
+    };
 };
 
 OpTable::OpMap OpTable::opMap_ = {
@@ -88,5 +99,5 @@ static void next() {}
 void run_lexer(string source) { 
   debug_log(source);
   Lexer lexer(source);
-  
+
 };
