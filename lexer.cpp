@@ -6,6 +6,16 @@
 
 using namespace std;
 
+class Lexer {
+  public:
+    int pos = 0;
+    void *buff;
+    int buff_len = 0;
+    Lexer(string buffer) {
+      buff_len = buffer.length();
+    }
+};
+
 OpTable::OpMap OpTable::opMap_ = {
   {"+", "PLUS"},
   {"-", "MINUS"},
@@ -75,4 +85,8 @@ enum Token {
 
 static void next() {}
 
-void run_lexer(string source) { debug_log(source); };
+void run_lexer(string source) { 
+  debug_log(source);
+  Lexer lexer(source);
+  
+};
