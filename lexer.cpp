@@ -8,9 +8,9 @@
 
 using namespace std;
 
-
-struct Token {
-  int pos;
+struct Token
+{
+  int pos = 0;
   string value;
   string name;
 };
@@ -31,27 +31,37 @@ public:
   bool is_new_line(char c);
 };
 
-void Lexer::skip_tokens(){
-
+void Lexer::skip_tokens()
+{
 };
 
-bool Lexer::is_new_line(char c) {
+bool Lexer::is_new_line(char c)
+{
   return (c == '\r' || c == '\n') ? true : false;
 };
 
-Token Lexer::parse_comment(char buff[]) {
+Token Lexer::parse_comment(char buff[])
+{
   int end_pos = pos + 2;
-  char charAtPos = buff[pos +2];
-  while(end_pos < buff_len && !(Lexer::is_new_line(buff[end_pos]))) {
+  char charAtPos = buff[pos + 2];
+  // walk to end of line
+  while (end_pos < buff_len && !(Lexer::is_new_line(buff[end_pos])))
+  {
     end_pos++;
   }
-
+  // copy char array to string
   string token_string;
-  token_string.push_back(*buff);
+  int buff_size = sizeof(buff) / sizeof(char);
+  for (int i = 0; i < buff_size; i++)
+  {
+    token_string = token_string + buff[i];
+  }
+
   Token token;
   token.name = "COMMENT";
   token.value = token_string.substr(pos, end_pos);
   token.pos = pos;
+  pos = end_pos + 1;
   return token;
 };
 
@@ -65,14 +75,20 @@ Token Lexer::token(char buff[])
     return token;
   }
   char cursorChar = buff[pos];
-
-  if(cursorChar == '/') {
+  if (cursorChar == '/')
+  {
     char nextCharFromPos = buff[pos + 1];
-    if(nextCharFromPos == '/') {
+    if (nextCharFromPos == '/')
+    {
       return Lexer::parse_comment(buff);
-    } else {
+    }
+    else
+    {
       // divide token
       Token token;
+      token.name = "DIVIDE";
+      token.value = '/';
+      token.pos = pos++;
       return token;
     }
   }
@@ -107,7 +123,6 @@ static void next() {}
 
 void run_lexer(string source)
 {
-  debug_log(source);
   Lexer lexer(source);
   int source_length = source.length();
   char source_array[source_length + 1];
