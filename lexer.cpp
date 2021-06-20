@@ -25,14 +25,22 @@ public:
   {
     buff_len = buffer.length();
   };
-  void skip_tokens();
-  Token token(char *buff);
-  Token parse_comment(char *buff);
+  void skip_tokens(char buff[]);
+  Token token(char buff[]);
+  Token parse_comment(char buff[]);
   bool is_new_line(char c);
 };
 
-void Lexer::skip_tokens()
+void Lexer::skip_tokens(char buff[])
 {
+  while(pos < buff_len) {
+    char char_at_pos = buff[pos];
+    if(char_at_pos == ' ' || char_at_pos == '\t' || char_at_pos == '\r' || char_at_pos == '\n') {
+      pos++;
+    } else {
+      break;
+    }
+  }
 };
 
 bool Lexer::is_new_line(char c)
@@ -67,7 +75,7 @@ Token Lexer::parse_comment(char buff[])
 
 Token Lexer::token(char buff[])
 {
-  Lexer::skip_tokens();
+  Lexer::skip_tokens(buff);
   // cursor at EOF
   if (pos >= buff_len)
   {
