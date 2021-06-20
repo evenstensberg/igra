@@ -6,7 +6,6 @@
 
 #define DEBUG 1
 
-
 map<char, string> OpTable = {
     {'+', "PLUS"},
     {'-', "MINUS"},
@@ -30,8 +29,7 @@ map<char, string> OpTable = {
     {'}', "R_BRACE"},
     {'[', "L_BRACKET"},
     {']', "R_BRACKET"},
-    {'=', "EQUALS"}
-};
+    {'=', "EQUALS"}};
 
 using namespace std;
 
@@ -56,19 +54,68 @@ public:
   Token token(char buff[]);
   Token parse_comment(char buff[]);
   bool is_new_line(char c);
+  Token process_number(char buff[]);
+  Token process_identifier(char buff[]);
+  bool isalphanum(char c);
+  Token proccess_quote(char buff[]);
+  bool is_digit(char c);
+  bool isalphanum(char c);
 };
 
 void Lexer::skip_tokens(char buff[])
 {
-  while(pos < buff_len) {
+  while (pos < buff_len)
+  {
     char char_at_pos = buff[pos];
-    if(char_at_pos == ' ' || char_at_pos == '\t' || char_at_pos == '\r' || char_at_pos == '\n') {
+    if (char_at_pos == ' ' || char_at_pos == '\t' || char_at_pos == '\r' || char_at_pos == '\n')
+    {
       pos++;
-    } else {
+    }
+    else
+    {
       break;
     }
   }
 };
+
+Token Lexer::proccess_quote(char buff[])
+{
+  string token_string;
+  int buff_size = sizeof(buff) / sizeof(char);
+  for (int i = 0; i < buff_size; i++)
+  {
+    token_string = token_string + buff[i];
+  }
+  string::size_type loc = token_string.find('"', pos + 1);
+  if (loc == -1)
+  {
+    fprintf(stderr, "Error at %d", pos);
+  }
+  else
+  {
+    Token token;
+    token.name = "QUOTE";
+    token.value = token_string.substr(pos, loc + 1);
+    token.pos = loc + 1;
+    pos = loc + 1;
+    return token;
+  }
+}
+bool Lexer::isalphanum(char c)
+{
+  return (c >= 'a' && c <= 'z') ||
+             (c >= 'A' && c <= 'Z') ||
+             (c >= '0' && c <= '9') ||
+             (c == '_' || c == '$');
+}
+Token Lexer::process_identifier(char buff[])
+{
+  int end_pos = pos + 1;
+  while (end_pos < buff_len && Lexer::isalphanum(buff[end_pos]))
+  {
+    end_pos++;
+  }
+}
 
 bool Lexer::is_new_line(char c)
 {
@@ -100,6 +147,35 @@ Token Lexer::parse_comment(char buff[])
   return token;
 };
 
+bool Lexer::is_digit(char c)
+{
+  return int(c) >= 0 && int(c) <= 9;
+}
+
+Token Lexer::process_number(char buff[])
+{
+  int end_pos = pos + 1;
+  while (end_pos < buff_len && Lexer::is_digit(buff[end_pos]))
+  {
+    end_pos++;
+  }
+
+  // copy char array to string
+  string token_string;
+  int buff_size = sizeof(buff) / sizeof(char);
+  for (int i = 0; i < buff_size; i++)
+  {
+    token_string = token_string + buff[i];
+  }
+
+  Token token;
+  token.name = "NUMBER";
+  token.value = token_string.substr(pos, end_pos);
+  token.pos = pos;
+  pos = end_pos;
+  return token;
+};
+
 Token Lexer::token(char buff[])
 {
   Lexer::skip_tokens(buff);
@@ -126,13 +202,37 @@ Token Lexer::token(char buff[])
       token.pos = pos++;
       return token;
     }
-  } else {
-    auto op = OpTable.find(cursorChar);
+  }
+  else
+  {
+    map<char, string>::iterator it;
+    it = OpTable.find(cursorChar);
     // Undefined operator
-    if(op == OpTable.end()) {
-
-    } else {
-      
+    if (it == OpTable.end())
+    {
+      if (Lexer::isalphanum(cursorChar))
+      {
+        return Lexer::process_identifier(buff);
+      }
+      else if (Lexer::is_digit(cursorChar))
+      {
+        return Lexer::process_number(buff);
+      }
+      else if (cursorChar == '"')
+      {
+        return Lexer::proccess_quote(buff);
+      }
+      else
+      {
+        fprintf(stderr, "Error at %d", pos);
+      }
+    }
+    else
+    {
+      Token token;
+      token.name = string(it->second);
+      token.value = cursorChar;
+      token.pos = pos++;
     }
   }
 };
