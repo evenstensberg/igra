@@ -6,6 +6,33 @@
 
 #define DEBUG 1
 
+
+map<char, string> OpTable = {
+    {'+', "PLUS"},
+    {'-', "MINUS"},
+    {'*', "MULTIPLY"},
+    {'.', "PERIOD"},
+    {'\\', "BACKSLASH"},
+    {':', "COLON"},
+    {'%', "PERCENT"},
+    {'|', "PIPE"},
+    {'!', "EXCLAMATION"},
+    {'?', "QUESTION"},
+    {'#', "POUND"},
+    {'&', "AMPERSAND"},
+    {';', "SEMI"},
+    {',', "COMMA"},
+    {'(', "L_PAREN"},
+    {')', "R_PAREN"},
+    {'<', "L_ANG"},
+    {'>', "R_ANG"},
+    {'{', "L_BRACE"},
+    {'}', "R_BRACE"},
+    {'[', "L_BRACKET"},
+    {']', "R_BRACKET"},
+    {'=', "EQUALS"}
+};
+
 using namespace std;
 
 struct Token
@@ -99,33 +126,16 @@ Token Lexer::token(char buff[])
       token.pos = pos++;
       return token;
     }
+  } else {
+    auto op = OpTable.find(cursorChar);
+    // Undefined operator
+    if(op == OpTable.end()) {
+
+    } else {
+      
+    }
   }
 };
-
-OpTable::OpMap OpTable::opMap_ = {
-    {"+", "PLUS"},
-    {"-", "MINUS"},
-    {"*", "MULTIPLY"},
-    {".", "PERIOD"},
-    {"\\", "BACKSLASH"},
-    {":", "COLON"},
-    {"%", "PERCENT"},
-    {"|", "PIPE"},
-    {"!", "EXCLAMATION"},
-    {"?", "QUESTION"},
-    {"#", "POUND"},
-    {"&", "AMPERSAND"},
-    {";", "SEMI"},
-    {",", "COMMA"},
-    {"(", "L_PAREN"},
-    {")", "R_PAREN"},
-    {"<", "L_ANG"},
-    {">", "R_ANG"},
-    {"{", "L_BRACE"},
-    {"}", "R_BRACE"},
-    {"[", "L_BRACKET"},
-    {"]", "R_BRACKET"},
-    {"=", "EQUALS"}};
 
 static void next() {}
 
