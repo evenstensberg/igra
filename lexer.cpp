@@ -56,7 +56,6 @@ public:
   bool is_new_line(char c);
   Token process_number(char buff[]);
   Token process_identifier(char buff[]);
-  bool isalphanum(char c);
   Token proccess_quote(char buff[]);
   bool is_digit(char c);
   bool isalphanum(char c);
