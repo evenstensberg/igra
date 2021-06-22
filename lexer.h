@@ -7,6 +7,13 @@
 
 using namespace std;
 
+struct Token
+{
+  int pos = 0;
+  string value;
+  string name;
+};
+
 class OpTable {
 public:
   typedef map<string, string> OpMap;

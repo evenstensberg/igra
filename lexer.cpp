@@ -236,13 +236,12 @@ Token Lexer::token(char buff[])
   }
 };
 
-static void next() {}
-
 void run_lexer(string source)
 {
   Lexer lexer(source);
   int source_length = source.length();
   char source_array[source_length + 1];
   strcpy(source_array, source.c_str());
-  lexer.token(source_array);
+  Token token;
+  token = lexer.token(source_array);
 };
