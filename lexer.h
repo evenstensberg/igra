@@ -20,7 +20,30 @@ public:
   static OpMap opMap_;
 };
 
-void run_lexer(string source);
+
+
+class Lexer
+{
+public:
+  int pos = 0;
+  void *buff;
+  int buff_len = 0;
+  Lexer(string buffer)
+  {
+    buff_len = buffer.length();
+  };
+  void skip_tokens(char buff[]);
+  Token token(char buff[]);
+  Token parse_comment(char buff[]);
+  bool is_new_line(char c);
+  Token process_number(char buff[]);
+  Token process_identifier(char buff[]);
+  Token proccess_quote(char buff[]);
+  bool is_digit(char c);
+  bool isalphanum(char c);
+};
+
+Lexer run_lexer(string source);
 
 
 #endif
